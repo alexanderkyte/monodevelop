@@ -242,5 +242,9 @@ namespace Microsoft.VisualStudio.Platform
 
             return styleName;
         }
+
+		public void Dispose()
+		{
+		}
     }
 }
