@@ -167,7 +167,7 @@ namespace MonoDevelop.Ide.Composition
 			}
 
 			var typeRefs = configuration.Catalog.Parts.Select (x => x.Id).OrderBy(x => x);
-			System.IO.File.WriteAllText (@"c:\composition_success.txt", String.Join (Environment.NewLine, typeRefs));
+			System.IO.File.WriteAllText (Path.Combine (Path.GetTempPath (), "composition_success.txt"), String.Join (Environment.NewLine, typeRefs));
 
 			RuntimeComposition = RuntimeComposition.CreateRuntimeComposition (configuration);
 			ExportProviderFactory = RuntimeComposition.CreateExportProviderFactory ();
