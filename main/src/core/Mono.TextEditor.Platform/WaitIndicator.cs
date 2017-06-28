@@ -6,7 +6,9 @@
 
 using System;
 using System.ComponentModel.Composition;
+using System.Threading;
 using Microsoft.CodeAnalysis.Editor.Host;
+using Microsoft.CodeAnalysis.Shared.Utilities;
 
 namespace Microsoft.VisualStudio.Platform
 {
