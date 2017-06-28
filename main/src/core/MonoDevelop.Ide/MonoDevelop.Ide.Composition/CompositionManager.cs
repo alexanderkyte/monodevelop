@@ -27,6 +27,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -134,7 +135,7 @@ namespace MonoDevelop.Ide.Composition
 			var discoveryErrors = catalog.DiscoveredParts.DiscoveryErrors;
 			if (!discoveryErrors.IsEmpty) {
 				var errorMessages = discoveryErrors.Select (x => x.Message).OrderBy (x => x);
-				System.IO.File.WriteAllText (@"c:\composition_discovery_errors.txt", String.Join (Environment.NewLine, errorMessages));
+				System.IO.File.WriteAllText (Path.Combine(Path.GetTempPath(), "composition_discovery_errors.txt"), String.Join (Environment.NewLine, errorMessages));
 
 				//throw new ApplicationException ($"MEF catalog scanning errors encountered.\n{string.Join ("\n", discoveryErrors)}");
 			}
@@ -151,18 +152,18 @@ namespace MonoDevelop.Ide.Composition
 				//var text = string.Join (Environment.NewLine, messages);
 				//Xwt.Clipboard.SetText (text);
 				var errorMessages = configuration.CompositionErrors.SelectMany(x => x).Select(x => x.Message).OrderBy(x => x);
-				System.IO.File.WriteAllText (@"c:\composition_errors.txt", String.Join (Environment.NewLine, errorMessages));
+				System.IO.File.WriteAllText (Path.Combine (Path.GetTempPath (), "composition_errors.txt"), String.Join (Environment.NewLine, errorMessages));
 				//configuration.ThrowOnErrors ();
 			}
 
 			if (_partsExcludedFromImportTypes.Count > 0) {
 				var excludedParts = _partsExcludedFromImportTypes.Select (x => x.Id).OrderBy (x => x);
-				System.IO.File.WriteAllText (@"c:\composition_partsExcludedFromImportTypes.txt", String.Join (Environment.NewLine, excludedParts));
+				System.IO.File.WriteAllText (Path.Combine (Path.GetTempPath (), "composition_partsExcludedFromImportTypes.txt"), String.Join (Environment.NewLine, excludedParts));
 			}
 
 			if (_partsExcludedByTypes.Count > 0) {
 				var excludedParts = _partsExcludedByTypes.Select (x => x.Id).OrderBy (x => x);
-				System.IO.File.WriteAllText (@"c:\composition_partsExcludedByTypes.txt", String.Join (Environment.NewLine, excludedParts));
+				System.IO.File.WriteAllText (Path.Combine (Path.GetTempPath (), "composition_partsExcludedByTypes.txt"), String.Join (Environment.NewLine, excludedParts));
 			}
 
 			var typeRefs = configuration.Catalog.Parts.Select (x => x.Id).OrderBy(x => x);
