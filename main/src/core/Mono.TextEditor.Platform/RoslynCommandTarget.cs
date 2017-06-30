@@ -6,6 +6,8 @@
 using System;
 using Microsoft.CodeAnalysis.Editor;
 using Microsoft.CodeAnalysis.Editor.Commands;
+using Microsoft.CodeAnalysis.Editor.Shared.Utilities;
+using Microsoft.CodeAnalysis.Utilities;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using MonoDevelop.Ide.Composition;
@@ -18,6 +20,13 @@ namespace Microsoft.VisualStudio.Platform
 
         internal ITextBuffer _languageBuffer;
         internal ITextView _textView;
+
+        static RoslynCommandTarget()
+        {
+            var defaultForegroundThreadData = ForegroundThreadData.CreateDefault(
+                defaultKind: ForegroundThreadDataKind.ForcedByPackageInitialize);
+            ForegroundThreadAffinitizedObject.CurrentForegroundThreadData = defaultForegroundThreadData;
+        }
 
         private RoslynCommandTarget(ITextView textView, ITextBuffer languageBuffer)
         {
@@ -78,6 +87,13 @@ namespace Microsoft.VisualStudio.Platform
         {
             CurrentHandlers.Execute (_languageBuffer.ContentType,
                 args: new CommentSelectionCommandArgs (_textView, _languageBuffer),
+                lastHandler: executeNextCommandTarget);
+        }
+
+        public void ExecuteInvokeCompletionList (Action executeNextCommandTarget)
+        {
+            CurrentHandlers.Execute (_languageBuffer.ContentType,
+                args: new InvokeCompletionListCommandArgs (_textView, _languageBuffer),
                 lastHandler: executeNextCommandTarget);
         }
     }
