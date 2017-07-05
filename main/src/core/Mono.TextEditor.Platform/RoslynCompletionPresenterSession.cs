@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.CodeAnalysis.Completion;
 using Microsoft.CodeAnalysis.Editor;
 using Microsoft.VisualStudio.Text;
@@ -35,6 +36,7 @@ namespace Microsoft.VisualStudio.Platform
 
         public void PresentItems (ITrackingSpan triggerSpan, IList<CompletionItem> items, CompletionItem selectedItem, CompletionItem suggestionModeItem, bool suggestionMode, bool isSoftSelected, ImmutableArray<CompletionItemFilter> completionItemFilters, string filterText)
         {
+            string combinedItems = String.Join(", ", items.Select(ci => ci.DisplayText));
         }
 
         public void SelectNextItem ()
