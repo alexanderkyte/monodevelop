@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.IO;
 using MonoDevelop.MacInterop;
 using NUnit.Framework;
 
@@ -56,19 +57,52 @@ namespace MacPlatform.Tests
 		[Test]
 		public static void TestApplicationUrls ()
 		{
-			string test = "/Applications/Xamarin Studio.app/Contents/Info.plist";
-			string[] results = MonoDevelop.MacInterop.CoreFoundation.GetApplicationUrls (test, MonoDevelop.MacInterop.CoreFoundation.LSRolesMask.All);
+			string dir = nameof (TestApplicationUrl);
+			string test = Path.Combine (dir, "Info.plist");
+			using (var helper = new PListHelper (dir, test)) {
+				string [] results = MonoDevelop.MacInterop.CoreFoundation.GetApplicationUrls (test, MonoDevelop.MacInterop.CoreFoundation.LSRolesMask.All);
 
-			Assert.Greater (results.Length, 0);
+				Assert.Greater (results.Length, 0);
+			}
 		}
 
 		[Test]
 		public static void TestApplicationUrl ()
 		{
-			string test = "/Applications/Xamarin Studio.app/Contents/Info.plist";
-			string result = MonoDevelop.MacInterop.CoreFoundation.GetApplicationUrl (test, MonoDevelop.MacInterop.CoreFoundation.LSRolesMask.All);
+			string dir = nameof (TestApplicationUrl);
+			string test = Path.Combine (dir, "Info.plist");
+			using (var helper = new PListHelper (dir, test)) {
+				string result = MonoDevelop.MacInterop.CoreFoundation.GetApplicationUrl (test, MonoDevelop.MacInterop.CoreFoundation.LSRolesMask.All);
 
-			Assert.NotNull (result);
+				Assert.NotNull (result);
+			}
+		}
+
+		class PListHelper : IDisposable
+		{
+			static string plistFile = Path.GetFullPath (
+				Path.Combine (
+					Path.GetDirectoryName (typeof (PListHelper).Assembly.Location),
+					"..",
+					"MacOSX",
+					"Info.plist.in"
+				)
+			);
+
+			readonly string dir;
+			public PListHelper (string dir, string path)
+			{
+				this.dir = dir;
+
+				Directory.CreateDirectory (dir);
+				File.Copy (plistFile, path, true);
+			}
+
+			public void Dispose ()
+			{
+				if (Directory.Exists (dir))
+					Directory.Delete (dir, true);
+			}
 		}
 	}
 }
